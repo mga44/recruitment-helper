@@ -1,0 +1,139 @@
+.leetcode-tracker {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    color: #fff;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.leetcode-tracker:hover {
+    transform: translateY(-5px);
+}
+
+.leetcode-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.leetcode-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ffa116, #ff6a00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.leetcode-progress {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.progress-circle-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.leetcode-form {
+    display: grid;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.leetcode-form input,
+.leetcode-form select {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.leetcode-form input:focus {
+    border-color: #ffa116;
+}
+
+.leetcode-form button {
+    background: linear-gradient(90deg, #ffa116, #ff6a00);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.leetcode-form button:hover {
+    opacity: 0.9;
+}
+
+.problem-list {
+    margin-top: 1.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.problem-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.02);
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #ffa116;
+}
+
+.difficulty-Easy {
+    color: #00af9b;
+}
+
+.difficulty-Medium {
+    color: #ffb800;
+}
+
+.difficulty-Hard {
+    color: #ff2d55;
+}
+
+.goal-reached {
+    color: #00af9b;
+    font-weight: bold;
+    animation: celebrate 0.5s ease-out;
+}
+
+@keyframes celebrate {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
