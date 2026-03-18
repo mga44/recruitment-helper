@@ -18,8 +18,10 @@ mongoose.connect(mongoUri)
 // Routes
 const processRoutes = require('./routes/processRoutes');
 const problemRoutes = require('./routes/problemRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 app.use('/api/processes', processRoutes);
 app.use('/api/problems', problemRoutes);
+app.use('/api/tasks', taskRoutes);
 
 app.get('/', (req, res) => {
     res.send('Recruitment Helper API');

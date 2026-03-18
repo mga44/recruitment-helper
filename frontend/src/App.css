@@ -224,3 +224,35 @@
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-main);
 }
+
+/* Filters */
+.filter-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.filter-group:focus-within {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-select {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  padding-right: 0.5rem;
+}
+
+.filter-select option {
+  background: #0f172a;
+  color: var(--text-main);
+}

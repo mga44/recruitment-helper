@@ -18,7 +18,43 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.leetcode-tracker:not(.collapsed) .leetcode-header {
     margin-bottom: 1.5rem;
+}
+
+.mini-stats {
+    background: rgba(255, 161, 22, 0.2);
+    color: #ffa116;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+}
+
+.leetcode-content-wrapper {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
+}
+
+.collapsed .leetcode-content-wrapper {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .leetcode-title {
