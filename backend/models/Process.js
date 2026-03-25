@@ -23,7 +23,15 @@ const processSchema = new mongoose.Schema({
     contact: {
         name: String,
         linkedIn: String
-    }
+    },
+    appointments: [{
+        eventId: String,
+        title: String,
+        description: String,
+        startTime: Date,
+        endTime: Date,
+        meetLink: String
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Process', processSchema);

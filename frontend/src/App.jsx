@@ -2,24 +2,38 @@ import React, { useState, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import ProcessCard from './components/ProcessCard';
 import ProcessForm from './components/ProcessForm';
+import AppointmentForm from './components/AppointmentForm';
 import LeetCodeTracker from './components/LeetCodeTracker';
 import TaskTracker from './components/TaskTracker';
-import { getProcesses, createProcess, updateProcess, deleteProcess } from './api';
+import { getProcesses, createProcess, updateProcess, deleteProcess, addAppointment } from './api';
 import './App.css';
 
 function App() {
   const [processes, setProcesses] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProcess, setEditingProcess] = useState(null);
+  const [addingAppointmentProcessId, setAddingAppointmentProcessId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [isGoogleConnected, setIsGoogleConnected] = useState(false);
 
   const statuses = ['All', 'Applied', 'Screened', 'Technical', 'Managerial', 'Offer', 'Rejected', 'Ghosted'];
 
   useEffect(() => {
     fetchData();
+    checkGoogleAuth();
   }, []);
+
+  const checkGoogleAuth = async () => {
+    try {
+      const { getGoogleAuthStatus } = await import('./api');
+      const data = await getGoogleAuthStatus();
+      setIsGoogleConnected(data.connected);
+    } catch {
+      console.warn('Could not connect to fetch Google auth status');
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -52,6 +66,16 @@ function App() {
     }
   };
 
+  const handleAddAppointmentSubmit = async (processId, data) => {
+    try {
+      await addAppointment(processId, data);
+      fetchData();
+      setAddingAppointmentProcessId(null);
+    } catch (err) {
+      alert('Failed to add appointment');
+    }
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this process?')) {
       try {
@@ -78,7 +102,18 @@ function App() {
           <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Recruitment <span style={{ color: 'var(--primary)' }}>Helper</span></h1>
           <p style={{ color: 'var(--text-muted)' }}>Manage your job applications with ease.</p>
         </div>
-        <button className="btn-primary" onClick={() => setIsFormOpen(true)}>+ Add Application</button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          {!isGoogleConnected ? (
+            <button className="btn-secondary" onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
+              Connect Google Calendar
+            </button>
+          ) : (
+            <span style={{ fontSize: '0.9rem', padding: '0.5rem 1rem', color: '#34A853', border: '1px solid #34A853', borderRadius: '4px', backgroundColor: '#34A85310' }}>
+              ✓ Google Calendar Connected
+            </span>
+          )}
+          <button className="btn-primary" onClick={() => setIsFormOpen(true)}>+ Add Application</button>
+        </div>
       </header>
 
       <Dashboard processes={processes} />
@@ -118,6 +153,7 @@ function App() {
                 process={process}
                 onEdit={setEditingProcess}
                 onDelete={handleDelete}
+                onAddAppointment={setAddingAppointmentProcessId}
               />
             ))}
             {filteredAndSortedProcesses.length === 0 && (
@@ -135,6 +171,14 @@ function App() {
           process={editingProcess}
           onSubmit={editingProcess ? handleUpdate : handleCreate}
           onCancel={() => { setIsFormOpen(false); setEditingProcess(null); }}
+        />
+      )}
+
+      {addingAppointmentProcessId && (
+        <AppointmentForm 
+          processId={addingAppointmentProcessId}
+          onSubmit={handleAddAppointmentSubmit}
+          onCancel={() => setAddingAppointmentProcessId(null)}
         />
       )}
     </div>

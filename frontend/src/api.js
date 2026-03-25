@@ -35,6 +35,16 @@ export const deleteProcess = async (id) => {
     return res.json();
 };
 
+export const addAppointment = async (processId, appointmentData) => {
+    const res = await fetch(`${API_URL}/${processId}/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(appointmentData),
+    });
+    if (!res.ok) throw new Error('Failed to add appointment');
+    return res.json();
+};
+
 export const getProblems = async () => {
     const res = await fetch(PROBLEMS_API_URL);
     if (!res.ok) throw new Error('Failed to fetch problems');
@@ -90,6 +100,12 @@ export const deleteTask = async (id) => {
         method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete task');
+    return res.json();
+};
+
+export const getGoogleAuthStatus = async () => {
+    const res = await fetch('/api/auth/google/status');
+    if (!res.ok) throw new Error('Failed to fetch auth status');
     return res.json();
 };
 

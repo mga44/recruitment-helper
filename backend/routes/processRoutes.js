@@ -43,4 +43,46 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+const { createEvent } = require('../utils/googleCalendarService');
+
+// Add an appointment to a process and Google Calendar
+router.post('/:id/appointments', async (req, res) => {
+    try {
+        const { title, description, start, end } = req.body;
+        const processId = req.params.id;
+
+        // 1. Find process
+        const process = await Process.findById(processId);
+        if (!process) {
+            return res.status(404).json({ message: 'Process not found' });
+        }
+
+        // 2. Create event in Google Calendar
+        const eventData = await createEvent({
+            summary: title, // use summary for event title
+            description,
+            start,
+            end
+        });
+
+        // 3. Save appointment details to Process model
+        const appointment = {
+            eventId: eventData.id,
+            title: title,
+            description: description,
+            startTime: new Date(start),
+            endTime: new Date(end),
+            meetLink: eventData.hangoutLink || null // If meet link is generated
+        };
+
+        process.appointments.push(appointment);
+        const updatedProcess = await process.save();
+
+        res.status(201).json(updatedProcess);
+    } catch (err) {
+        console.error('Error adding appointment:', err);
+        res.status(500).json({ message: 'Error adding appointment to calendar', error: err.message });
+    }
+});
+
 module.exports = router;
