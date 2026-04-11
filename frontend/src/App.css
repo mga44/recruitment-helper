@@ -256,3 +256,121 @@
   background: #0f172a;
   color: var(--text-main);
 }
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.toggle-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Process List (List View Container) */
+.process-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.process-card.list-view {
+  display: grid;
+  grid-template-columns: 250px 120px 1fr 120px 120px 160px;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  gap: 1.5rem;
+  min-height: 70px;
+}
+
+.process-list-header {
+  display: grid;
+  grid-template-columns: 250px 120px 1fr 120px 120px 160px;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  gap: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.process-list-header .col-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.process-card.list-view .col-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.process-card.list-view .col-status {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.process-card.list-view .col-salary {
+  display: flex;
+  align-items: center;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.process-card.list-view .col-date {
+  color: var(--text-muted);
+}
+
+.process-card.list-view .col-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.list-actions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.process-card.list-view:hover .list-actions {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .process-card.list-view,
+  .process-list-header {
+    grid-template-columns: 200px 100px 1fr 100px 100px 140px;
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+  .process-list-header {
+    font-size: 0.65rem;
+  }
+}

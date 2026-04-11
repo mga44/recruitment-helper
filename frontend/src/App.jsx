@@ -17,6 +17,7 @@ function App() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState('desc');
   const [isGoogleConnected, setIsGoogleConnected] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
 
   const statuses = ['All', 'Applied', 'Screened', 'Technical', 'Managerial', 'Offer', 'Rejected', 'Ghosted'];
 
@@ -90,6 +91,21 @@ function App() {
   const filteredAndSortedProcesses = processes
     .filter(p => statusFilter === 'All' || p.status === statusFilter)
     .sort((a, b) => {
+      // Priority scoring: 0-High (Offer, Managerial, Screened, Technical), 1-Normal (Applied), 2-Low (Rejected, Ghosted)
+      const getStatusPriority = (status) => {
+        if (['Offer', 'Managerial', 'Screened', 'Technical'].includes(status)) return 0;
+        if (['Rejected', 'Ghosted'].includes(status)) return 2;
+        return 1; // Default for Applied
+      };
+
+      const priorityA = getStatusPriority(a.status);
+      const priorityB = getStatusPriority(b.status);
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      // Within the same priority, sort by date
       const dateA = new Date(a.appliedAt);
       const dateB = new Date(b.appliedAt);
       return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
@@ -139,6 +155,22 @@ function App() {
                 <option value="asc">Oldest First</option>
               </select>
             </div>
+            <div className="view-toggle">
+              <button 
+                className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`} 
+                onClick={() => setViewMode('grid')}
+                title="Grid View"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              </button>
+              <button 
+                className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`} 
+                onClick={() => setViewMode('list')}
+                title="List View"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              </button>
+            </div>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{filteredAndSortedProcesses.length} items found</span>
           </div>
         </div>
@@ -146,11 +178,22 @@ function App() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Loading processes...</div>
         ) : (
-          <div className="process-grid">
+          <div className={viewMode === 'grid' ? "process-grid" : "process-list"}>
+            {viewMode === 'list' && filteredAndSortedProcesses.length > 0 && (
+              <div className="process-list-header">
+                <div className="col-info">Company / Position</div>
+                <div className="col-status">Status</div>
+                <div className="col-salary">Salary Range</div>
+                <div className="col-date">Applied Date</div>
+                <div className="col-link">Job Link</div>
+                <div className="col-actions">Actions</div>
+              </div>
+            )}
             {filteredAndSortedProcesses.map(process => (
               <ProcessCard
                 key={process._id}
                 process={process}
+                viewMode={viewMode}
                 onEdit={setEditingProcess}
                 onDelete={handleDelete}
                 onAddAppointment={setAddingAppointmentProcessId}
