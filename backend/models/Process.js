@@ -16,6 +16,7 @@ const processSchema = new mongoose.Schema({
     jobUrl: String,
     appliedAt: { type: Date, default: Date.now },
     additionalInformation: String,
+    rejectionFeedback: String,
     notes: [{
         date: { type: Date, default: Date.now },
         content: String

@@ -8,7 +8,8 @@ const ProcessForm = ({ process, onSubmit, onCancel }) => {
         salary: { min: '', max: '', currency: 'USD' },
         jobUrl: '',
         appliedAt: new Date().toISOString().split('T')[0],
-        additionalInformation: ''
+        additionalInformation: '',
+        rejectionFeedback: ''
     });
 
     useEffect(() => {
@@ -91,6 +92,12 @@ const ProcessForm = ({ process, onSubmit, onCancel }) => {
                         <label>Additional Info</label>
                         <textarea name="additionalInformation" value={formData.additionalInformation} onChange={handleChange} placeholder="Remote, Hybrid, etc." rows="3" />
                     </div>
+                    {formData.status === 'Rejected' && (
+                        <div className="form-group animate-fade">
+                            <label>Rejection Feedback</label>
+                            <textarea name="rejectionFeedback" value={formData.rejectionFeedback || ''} onChange={handleChange} placeholder="Feedback on what to improve, missing skills, etc." rows="3" />
+                        </div>
+                    )}
                     <div className="modal-actions">
                         <button type="button" onClick={onCancel} className="btn-secondary">Cancel</button>
                         <button type="submit" className="btn-primary">{process ? 'Update' : 'Create'}</button>

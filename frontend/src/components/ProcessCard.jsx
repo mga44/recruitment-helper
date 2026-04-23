@@ -97,6 +97,15 @@ const ProcessCard = ({ process, onEdit, onDelete, onAddAppointment, viewMode }) 
                                 </a>
                             )}
                         </div>
+                        
+                        {process.status === 'Rejected' && process.rejectionFeedback && (
+                            <div style={{ marginTop: '0.75rem', padding: '0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
+                                <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.85rem', color: '#ef4444' }}>Rejection Feedback</h4>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+                                    {process.rejectionFeedback}
+                                </p>
+                            </div>
+                        )}
 
                         <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
