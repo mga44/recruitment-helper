@@ -18,6 +18,8 @@ function App() {
   const [sortOrder, setSortOrder] = useState('desc');
   const [isGoogleConnected, setIsGoogleConnected] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackCopied, setFeedbackCopied] = useState(false);
 
   const statuses = ['All', 'Applied', 'Screened', 'Technical', 'Managerial', 'Offer', 'Rejected', 'Ghosted'];
 
@@ -88,6 +90,26 @@ function App() {
     }
   };
 
+  const buildFeedbackText = () => {
+    const withFeedback = processes.filter(p => p.rejectionFeedback && p.rejectionFeedback.trim());
+    const feedbackList = withFeedback
+      .map(p => `# ${p.companyName}\n${p.rejectionFeedback.trim()}`)
+      .join('\n\n');
+
+    const prompt = `You are a career coach helping a software engineer improve based on recruitment rejection feedback. Below are rejection feedbacks from multiple companies. Analyze all feedback holistically and create a structured, prioritized learning plan. Group recurring themes, identify the most critical skill gaps, and suggest concrete resources and a realistic timeline for improvement. Be specific and actionable.
+
+---
+
+${feedbackList}`;
+    return prompt;
+  };
+
+  const handleCopyFeedback = async () => {
+    await navigator.clipboard.writeText(buildFeedbackText());
+    setFeedbackCopied(true);
+    setTimeout(() => setFeedbackCopied(false), 2000);
+  };
+
   const filteredAndSortedProcesses = processes
     .filter(p => statusFilter === 'All' || p.status === statusFilter)
     .sort((a, b) => {
@@ -128,6 +150,7 @@ function App() {
               ✓ Google Calendar Connected
             </span>
           )}
+          <button className="btn-secondary" onClick={() => setIsFeedbackOpen(true)}>Feedback Summary</button>
           <button className="btn-primary" onClick={() => setIsFormOpen(true)}>+ Add Application</button>
         </div>
       </header>
@@ -218,11 +241,51 @@ function App() {
       )}
 
       {addingAppointmentProcessId && (
-        <AppointmentForm 
+        <AppointmentForm
           processId={addingAppointmentProcessId}
           onSubmit={handleAddAppointmentSubmit}
           onCancel={() => setAddingAppointmentProcessId(null)}
         />
+      )}
+
+      {isFeedbackOpen && (
+        <div className="modal-overlay" onClick={() => setIsFeedbackOpen(false)}>
+          <div className="modal-content glass" style={{ maxWidth: '750px' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ margin: 0 }}>Feedback Summary</h2>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                {processes.filter(p => p.rejectionFeedback && p.rejectionFeedback.trim()).length} entries
+              </span>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+              Copy this prompt into an LLM to get a structured learning plan based on your rejection feedback.
+            </p>
+            <textarea
+              readOnly
+              value={buildFeedbackText()}
+              style={{
+                width: '100%',
+                minHeight: '400px',
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid var(--border)',
+                borderRadius: '0.6rem',
+                color: 'var(--text-main)',
+                padding: '1rem',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                lineHeight: '1.6',
+                resize: 'vertical',
+                boxSizing: 'border-box',
+              }}
+            />
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setIsFeedbackOpen(false)}>Close</button>
+              <button className="btn-primary" onClick={handleCopyFeedback}>
+                {feedbackCopied ? 'Copied!' : 'Copy to Clipboard'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
