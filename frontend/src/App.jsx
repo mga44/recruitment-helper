@@ -5,7 +5,7 @@ import ProcessForm from './components/ProcessForm';
 import AppointmentForm from './components/AppointmentForm';
 import LeetCodeTracker from './components/LeetCodeTracker';
 import TaskTracker from './components/TaskTracker';
-import { getProcesses, createProcess, updateProcess, deleteProcess, addAppointment } from './api';
+import { getProcesses, createProcess, updateProcess, deleteProcess, addAppointment, getGoogleAuthStatus, isDemoMode, resetDemoData } from './api';
 import './App.css';
 
 function App() {
@@ -18,6 +18,8 @@ function App() {
   const [sortOrder, setSortOrder] = useState('desc');
   const [isGoogleConnected, setIsGoogleConnected] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackCopied, setFeedbackCopied] = useState(false);
 
   const statuses = ['All', 'Applied', 'Screened', 'Technical', 'Managerial', 'Offer', 'Rejected', 'Ghosted'];
 
@@ -28,7 +30,6 @@ function App() {
 
   const checkGoogleAuth = async () => {
     try {
-      const { getGoogleAuthStatus } = await import('./api');
       const data = await getGoogleAuthStatus();
       setIsGoogleConnected(data.connected);
     } catch {
@@ -53,6 +54,7 @@ function App() {
       fetchData();
       setIsFormOpen(false);
     } catch (err) {
+      console.error(err);
       alert('Error creating process');
     }
   };
@@ -63,6 +65,7 @@ function App() {
       fetchData();
       setEditingProcess(null);
     } catch (err) {
+      console.error(err);
       alert('Error updating process');
     }
   };
@@ -73,6 +76,7 @@ function App() {
       fetchData();
       setAddingAppointmentProcessId(null);
     } catch (err) {
+      console.error(err);
       alert('Failed to add appointment');
     }
   };
@@ -83,9 +87,30 @@ function App() {
         await deleteProcess(id);
         fetchData();
       } catch (err) {
+        console.error(err);
         alert('Error deleting process');
       }
     }
+  };
+
+  const buildFeedbackText = () => {
+    const withFeedback = processes.filter(p => p.rejectionFeedback && p.rejectionFeedback.trim());
+    const feedbackList = withFeedback
+      .map(p => `# ${p.companyName}\n${p.rejectionFeedback.trim()}`)
+      .join('\n\n');
+
+    const prompt = `You are a career coach helping a software engineer improve based on recruitment rejection feedback. Below are rejection feedbacks from multiple companies. Analyze all feedback holistically and create a structured, prioritized learning plan. Group recurring themes, identify the most critical skill gaps, and suggest concrete resources and a realistic timeline for improvement. Be specific and actionable.
+
+---
+
+${feedbackList}`;
+    return prompt;
+  };
+
+  const handleCopyFeedback = async () => {
+    await navigator.clipboard.writeText(buildFeedbackText());
+    setFeedbackCopied(true);
+    setTimeout(() => setFeedbackCopied(false), 2000);
   };
 
   const filteredAndSortedProcesses = processes
@@ -113,6 +138,16 @@ function App() {
 
   return (
     <div className="container">
+      {isDemoMode && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.75rem 1.25rem', marginBottom: '1.5rem', border: '1px solid var(--primary)', borderRadius: '0.6rem', background: 'rgba(255, 255, 255, 0.05)' }}>
+          <span style={{ fontSize: '0.9rem' }}>
+            🧪 <strong>Demo mode</strong> — data lives in your browser only; Google Calendar is simulated.
+          </span>
+          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>
+            Reset demo data
+          </button>
+        </div>
+      )}
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Recruitment <span style={{ color: 'var(--primary)' }}>Helper</span></h1>
@@ -120,7 +155,7 @@ function App() {
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           {!isGoogleConnected ? (
-            <button className="btn-secondary" onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
+            <button className="btn-secondary" onClick={() => window.location.href = '/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
               Connect Google Calendar
             </button>
           ) : (
@@ -128,6 +163,7 @@ function App() {
               ✓ Google Calendar Connected
             </span>
           )}
+          <button className="btn-secondary" onClick={() => setIsFeedbackOpen(true)}>Feedback Summary</button>
           <button className="btn-primary" onClick={() => setIsFormOpen(true)}>+ Add Application</button>
         </div>
       </header>
@@ -218,11 +254,51 @@ function App() {
       )}
 
       {addingAppointmentProcessId && (
-        <AppointmentForm 
+        <AppointmentForm
           processId={addingAppointmentProcessId}
           onSubmit={handleAddAppointmentSubmit}
           onCancel={() => setAddingAppointmentProcessId(null)}
         />
+      )}
+
+      {isFeedbackOpen && (
+        <div className="modal-overlay" onClick={() => setIsFeedbackOpen(false)}>
+          <div className="modal-content glass" style={{ maxWidth: '750px' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ margin: 0 }}>Feedback Summary</h2>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                {processes.filter(p => p.rejectionFeedback && p.rejectionFeedback.trim()).length} entries
+              </span>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+              Copy this prompt into an LLM to get a structured learning plan based on your rejection feedback.
+            </p>
+            <textarea
+              readOnly
+              value={buildFeedbackText()}
+              style={{
+                width: '100%',
+                minHeight: '400px',
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid var(--border)',
+                borderRadius: '0.6rem',
+                color: 'var(--text-main)',
+                padding: '1rem',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                lineHeight: '1.6',
+                resize: 'vertical',
+                boxSizing: 'border-box',
+              }}
+            />
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setIsFeedbackOpen(false)}>Close</button>
+              <button className="btn-primary" onClick={handleCopyFeedback}>
+                {feedbackCopied ? 'Copied!' : 'Copy to Clipboard'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

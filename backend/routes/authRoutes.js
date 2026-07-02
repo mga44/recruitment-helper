@@ -15,7 +15,7 @@ router.get('/google/callback', async (req, res) => {
     try {
         await saveTokens(code);
         // Redirect back to frontend
-        res.redirect('http://localhost:5173'); // Assuming Vite default port
+        res.redirect(process.env.FRONTEND_URL || 'http://localhost:5173');
     } catch (error) {
         console.error('Error saving tokens:', error);
         res.status(500).send('Authentication failed');

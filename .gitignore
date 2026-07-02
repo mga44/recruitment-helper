@@ -25,4 +25,8 @@ dist-ssr
 
 backend/config/*
 backend/.env
+backend/tokens.json
+
+# Claude Code local state
+.claude/
 

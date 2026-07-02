@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const ProcessForm = ({ process, onSubmit, onCancel }) => {
-    const [formData, setFormData] = useState({
+    // The form mounts fresh each time the modal opens, so initializing from
+    // the edited process here covers both create and edit.
+    const [formData, setFormData] = useState(() => process ? {
+        ...process,
+        appliedAt: new Date(process.appliedAt).toISOString().split('T')[0]
+    } : {
         companyName: '',
         position: '',
         status: 'Applied',
@@ -11,15 +16,6 @@ const ProcessForm = ({ process, onSubmit, onCancel }) => {
         additionalInformation: '',
         rejectionFeedback: ''
     });
-
-    useEffect(() => {
-        if (process) {
-            setFormData({
-                ...process,
-                appliedAt: new Date(process.appliedAt).toISOString().split('T')[0]
-            });
-        }
-    }, [process]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

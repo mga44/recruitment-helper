@@ -1,0 +1,126 @@
+{
+    "processes": [
+        {
+            "companyName": "Nordwave Systems",
+            "position": "Senior Backend Engineer",
+            "status": "Technical",
+            "salary": { "min": 22000, "max": 28000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/nordwave/senior-backend",
+            "appliedDaysAgo": 12,
+            "additionalInformation": "Hybrid, 2 days/week in office. Referred by a former colleague.",
+            "contact": { "name": "Anna Kowalska", "linkedIn": "https://linkedin.com/in/anna-kowalska-example" },
+            "notes": [
+                { "daysAgo": 8, "content": "Recruiter screen went well, moving to technical round." },
+                { "daysAgo": 3, "content": "Received prep materials: system design + live coding in Node.js." }
+            ],
+            "appointments": [
+                { "title": "Technical interview", "description": "System design + live coding", "inDays": 2, "startHour": 10, "durationMinutes": 90 }
+            ]
+        },
+        {
+            "companyName": "Quantia Labs",
+            "position": "Full-Stack Developer (React/Node)",
+            "status": "Offer",
+            "salary": { "min": 19000, "max": 24000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/quantia/fullstack",
+            "appliedDaysAgo": 30,
+            "additionalInformation": "Fully remote, B2B contract.",
+            "contact": { "name": "Marcin Nowak", "linkedIn": "https://linkedin.com/in/marcin-nowak-example" },
+            "notes": [
+                { "daysAgo": 6, "content": "Final round done. They hinted the offer is coming." },
+                { "daysAgo": 1, "content": "Offer received! 23k PLN B2B. Deadline to respond: end of next week." }
+            ],
+            "appointments": []
+        },
+        {
+            "companyName": "Helios Fintech",
+            "position": "Node.js Developer",
+            "status": "Managerial",
+            "salary": { "min": 18000, "max": 22000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/helios/nodejs",
+            "appliedDaysAgo": 18,
+            "additionalInformation": "Payments platform team, on-call rotation.",
+            "contact": { "name": "Ewa Zielinska", "linkedIn": "" },
+            "notes": [
+                { "daysAgo": 4, "content": "Technical round passed. Managerial interview scheduled." }
+            ],
+            "appointments": [
+                { "title": "Managerial interview", "description": "Meeting with the engineering manager", "inDays": 4, "startHour": 14, "durationMinutes": 60 }
+            ]
+        },
+        {
+            "companyName": "Brightpath Digital",
+            "position": "Frontend Developer (React)",
+            "status": "Screened",
+            "salary": { "min": 15000, "max": 19000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/brightpath/react",
+            "appliedDaysAgo": 7,
+            "additionalInformation": "Agency work, multiple client projects.",
+            "contact": { "name": "", "linkedIn": "" },
+            "notes": [],
+            "appointments": []
+        },
+        {
+            "companyName": "Vertex Cloud",
+            "position": "Software Engineer",
+            "status": "Applied",
+            "salary": { "min": 20000, "max": 26000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/vertex/swe",
+            "appliedDaysAgo": 2,
+            "additionalInformation": "Applied via careers page. Infrastructure tooling team.",
+            "contact": { "name": "", "linkedIn": "" },
+            "notes": [],
+            "appointments": []
+        },
+        {
+            "companyName": "Orbita Games",
+            "position": "Backend Engineer",
+            "status": "Rejected",
+            "salary": { "min": 16000, "max": 21000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/orbita/backend",
+            "appliedDaysAgo": 25,
+            "additionalInformation": "Multiplayer services team.",
+            "contact": { "name": "Piotr Wisniewski", "linkedIn": "" },
+            "notes": [
+                { "daysAgo": 10, "content": "Technical round: live coding felt rushed, struggled with the graph problem." }
+            ],
+            "rejectionFeedback": "Strong communication and system design fundamentals, but the live coding round was below our bar - candidate struggled with graph traversal and time complexity analysis. Would encourage reapplying in 6-12 months after more algorithm practice.",
+            "appointments": []
+        },
+        {
+            "companyName": "Stellar Analytics",
+            "position": "JavaScript Developer",
+            "status": "Ghosted",
+            "salary": { "min": 14000, "max": 17000, "currency": "PLN" },
+            "jobUrl": "https://example.com/careers/stellar/js",
+            "appliedDaysAgo": 40,
+            "additionalInformation": "No response since the recruiter screen.",
+            "contact": { "name": "Tomasz Lewandowski", "linkedIn": "" },
+            "notes": [
+                { "daysAgo": 30, "content": "Recruiter screen done, promised feedback within a week." },
+                { "daysAgo": 20, "content": "Follow-up email sent, no reply." }
+            ],
+            "rejectionFeedback": "",
+            "appointments": []
+        }
+    ],
+    "problems": [
+        { "title": "Two Sum", "url": "https://leetcode.com/problems/two-sum/", "difficulty": "Easy", "solvedDaysAgo": 0 },
+        { "title": "Valid Parentheses", "url": "https://leetcode.com/problems/valid-parentheses/", "difficulty": "Easy", "solvedDaysAgo": 0 },
+        { "title": "Course Schedule", "url": "https://leetcode.com/problems/course-schedule/", "difficulty": "Medium", "solvedDaysAgo": 1 },
+        { "title": "Number of Islands", "url": "https://leetcode.com/problems/number-of-islands/", "difficulty": "Medium", "solvedDaysAgo": 1 },
+        { "title": "Merge Intervals", "url": "https://leetcode.com/problems/merge-intervals/", "difficulty": "Medium", "solvedDaysAgo": 2 },
+        { "title": "LRU Cache", "url": "https://leetcode.com/problems/lru-cache/", "difficulty": "Medium", "solvedDaysAgo": 3 },
+        { "title": "Binary Tree Level Order Traversal", "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/", "difficulty": "Medium", "solvedDaysAgo": 4 },
+        { "title": "Trapping Rain Water", "url": "https://leetcode.com/problems/trapping-rain-water/", "difficulty": "Hard", "solvedDaysAgo": 5 },
+        { "title": "Longest Substring Without Repeating Characters", "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/", "difficulty": "Medium", "solvedDaysAgo": 6 },
+        { "title": "Best Time to Buy and Sell Stock", "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/", "difficulty": "Easy", "solvedDaysAgo": 6 }
+    ],
+    "tasks": [
+        { "title": "Prepare system design notes for Nordwave interview", "dueInDays": 1, "isDone": false, "relatedCompany": "Nordwave Systems" },
+        { "title": "Respond to Quantia Labs offer", "dueInDays": 5, "isDone": false, "relatedCompany": "Quantia Labs" },
+        { "title": "Research Helios Fintech engineering culture", "dueInDays": 3, "isDone": false, "relatedCompany": "Helios Fintech" },
+        { "title": "Update CV with latest project", "dueInDays": -1, "isDone": false, "relatedCompany": null },
+        { "title": "Ask for referral at Vertex Cloud", "dueInDays": 0, "isDone": true, "relatedCompany": "Vertex Cloud" }
+    ]
+}
