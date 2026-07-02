@@ -5,7 +5,7 @@ import ProcessForm from './components/ProcessForm';
 import AppointmentForm from './components/AppointmentForm';
 import LeetCodeTracker from './components/LeetCodeTracker';
 import TaskTracker from './components/TaskTracker';
-import { getProcesses, createProcess, updateProcess, deleteProcess, addAppointment } from './api';
+import { getProcesses, createProcess, updateProcess, deleteProcess, addAppointment, getGoogleAuthStatus, isDemoMode, resetDemoData } from './api';
 import './App.css';
 
 function App() {
@@ -30,7 +30,6 @@ function App() {
 
   const checkGoogleAuth = async () => {
     try {
-      const { getGoogleAuthStatus } = await import('./api');
       const data = await getGoogleAuthStatus();
       setIsGoogleConnected(data.connected);
     } catch {
@@ -55,6 +54,7 @@ function App() {
       fetchData();
       setIsFormOpen(false);
     } catch (err) {
+      console.error(err);
       alert('Error creating process');
     }
   };
@@ -65,6 +65,7 @@ function App() {
       fetchData();
       setEditingProcess(null);
     } catch (err) {
+      console.error(err);
       alert('Error updating process');
     }
   };
@@ -75,6 +76,7 @@ function App() {
       fetchData();
       setAddingAppointmentProcessId(null);
     } catch (err) {
+      console.error(err);
       alert('Failed to add appointment');
     }
   };
@@ -85,6 +87,7 @@ function App() {
         await deleteProcess(id);
         fetchData();
       } catch (err) {
+        console.error(err);
         alert('Error deleting process');
       }
     }
@@ -135,6 +138,16 @@ ${feedbackList}`;
 
   return (
     <div className="container">
+      {isDemoMode && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.75rem 1.25rem', marginBottom: '1.5rem', border: '1px solid var(--primary)', borderRadius: '0.6rem', background: 'rgba(255, 255, 255, 0.05)' }}>
+          <span style={{ fontSize: '0.9rem' }}>
+            🧪 <strong>Demo mode</strong> — data lives in your browser only; Google Calendar is simulated.
+          </span>
+          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>
+            Reset demo data
+          </button>
+        </div>
+      )}
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Recruitment <span style={{ color: 'var(--primary)' }}>Helper</span></h1>
