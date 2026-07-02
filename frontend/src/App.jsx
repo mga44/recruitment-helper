@@ -142,7 +142,7 @@ ${feedbackList}`;
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           {!isGoogleConnected ? (
-            <button className="btn-secondary" onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
+            <button className="btn-secondary" onClick={() => window.location.href = '/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
               Connect Google Calendar
             </button>
           ) : (
