@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Recruitment Helper — a single-user job-application tracker. React 19 + Vite frontend, Express 5 + Mongoose backend, MongoDB storage, with Google Calendar integration for interview appointments. There are no tests anywhere in the repo.
+Recruitment Helper — a single-user job-application tracker. React 19 + Vite frontend, Express 5 + Mongoose backend, MongoDB storage, with Google Calendar integration for interview appointments.
 
 ## Commands
 
@@ -12,18 +12,28 @@ Recruitment Helper — a single-user job-application tracker. React 19 + Vite fr
 # Full stack via Docker (app served at http://localhost:8080)
 docker compose up --build
 
-# Frontend dev server (Vite, http://localhost:5173)
+# Frontend dev server (Vite, http://localhost:5173; /api proxied to localhost:5000)
 cd frontend && npm run dev
 
 # Frontend lint / production build
 cd frontend && npm run lint
 cd frontend && npm run build
 
+# Demo-mode build (localStorage instead of backend; used for GitHub Pages)
+cd frontend && VITE_DEMO_MODE=true npm run build
+
 # Backend (requires MongoDB running; MONGO_URI defaults to mongodb://localhost:27017/recruitment)
-cd backend && node server.js
+cd backend && npm start
+
+# Backend tests (jest + supertest + in-memory Mongo; no DB needed)
+cd backend && npm test
+cd backend && npx jest tests/processes.test.js   # single suite
+
+# Seed sample data into Mongo (refuses to wipe a non-empty DB without --force)
+cd backend && npm run seed
 ```
 
-The backend has no dev/start script in package.json and no hot reload — run `node server.js` directly.
+The backend has no hot reload. Frontend tests don't exist; backend route tests live in `backend/tests/`.
 
 ## Architecture
 
@@ -31,7 +41,9 @@ Two independent npm projects (`frontend/`, `backend/`) plus a `docker-compose.ym
 
 **API routing/proxying:** the frontend calls relative `/api/...` URLs (see `frontend/src/api.js`, the single fetch-wrapper module all components use). In Docker, `frontend/nginx.conf` proxies `/api` to `backend:5000`; in dev, `vite.config.js` proxies `/api` to `http://localhost:5000`. The OAuth callback redirects to `FRONTEND_URL` (defaults to `http://localhost:5173`) in `authRoutes.js`.
 
-**Backend structure:** `server.js` mounts one Express router per domain under `/api/*`:
+**Demo mode:** `frontend/src/api/index.js` switches at build time between `real.js` (fetch client) and `demo.js` (localStorage-backed, same response shapes) based on `VITE_DEMO_MODE`. The seed dataset `frontend/src/api/seed-data.json` stores dates as day offsets (materialized at seed time) and is shared with `backend/scripts/seed.js`.
+
+**Backend structure:** `app.js` builds the Express app (used directly by supertest in tests); `server.js` adds the Mongo connection and listener. One router per domain under `/api/*`:
 - `/api/processes` (`routes/processRoutes.js`) — CRUD on recruitment processes
 - `/api/problems` (`routes/problemRoutes.js`) — LeetCode problem log, incl. `/daily-stats`
 - `/api/tasks` (`routes/taskRoutes.js`) — todos, optionally referencing a Process
