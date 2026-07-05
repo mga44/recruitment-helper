@@ -139,19 +139,8 @@ ${feedbackList}`;
   return (
     <div className="container">
       <div className="prompt-line">
-        <span className="prompt-dollar">$</span><span>recruitment-helper --dashboard</span><span className="prompt-cursor"></span>
-      </div>
-
-      {isDemoMode && (
-        <div className="demo-banner">
-          <span># demo_mode — data stored locally, calendar simulated</span>
-          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>reset</button>
-        </div>
-      )}
-      <header className="app-header">
-        <div>
-          <h1>Recruitment Helper</h1>
-          <p className="app-tagline">Manage your job applications with ease.</p>
+        <div className="prompt-text">
+          <span className="prompt-dollar">$</span><span className="prompt-command">recruitment-helper</span><span> --dashboard</span><span className="prompt-cursor"></span>
         </div>
         <div className="header-links">
           {!isGoogleConnected ? (
@@ -162,7 +151,14 @@ ${feedbackList}`;
           <button className="btn-secondary" onClick={() => setIsFeedbackOpen(true)}>feedback_summary</button>
           <button className="btn-primary" onClick={() => setIsFormOpen(true)}>[ + new_application ]</button>
         </div>
-      </header>
+      </div>
+
+      {isDemoMode && (
+        <div className="demo-banner">
+          <span># demo_mode — data stored locally, calendar simulated</span>
+          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>reset</button>
+        </div>
+      )}
 
       <Dashboard processes={processes} />
 

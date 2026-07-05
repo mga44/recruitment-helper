@@ -1,18 +1,33 @@
 /* Component-specific styles */
 
-/* Prompt line */
+/* Prompt line (doubles as the header row) */
 .prompt-line {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
   color: var(--text-muted);
-  margin-bottom: 28px;
+}
+
+.prompt-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .prompt-dollar {
   color: var(--accent);
+}
+
+.prompt-command {
+  color: var(--text-main);
+  font-weight: 700;
 }
 
 .prompt-cursor {
@@ -21,28 +36,6 @@
   background: var(--text-muted);
   display: inline-block;
   animation: blink 1s step-end infinite;
-}
-
-/* Header */
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-
-.app-header h1 {
-  font-size: 26px;
-  margin-bottom: 6px;
-}
-
-.app-tagline {
-  font-size: 14px;
-  color: var(--text-muted);
 }
 
 .header-links {
@@ -96,7 +89,8 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
   letter-spacing: 0.06em;
-  color: var(--text-muted);
+  color: var(--text-main);
+  font-weight: 700;
   text-transform: lowercase;
 }
 
@@ -257,6 +251,10 @@
   align-items: center;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
+}
+
+.processes-toolbar-controls select {
+  width: auto;
 }
 
 .view-toggle {
@@ -507,7 +505,7 @@
     padding: 32px 16px 64px;
   }
 
-  .app-header {
+  .prompt-line {
     align-items: flex-start;
   }
 
