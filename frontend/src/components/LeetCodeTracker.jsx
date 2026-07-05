@@ -5,7 +5,7 @@ import './LeetCodeTracker.css';
 const LeetCodeTracker = () => {
     const [problems, setProblems] = useState([]);
     const [dailyCount, setDailyCount] = useState(0);
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         url: '',
@@ -50,64 +50,29 @@ const LeetCodeTracker = () => {
         }
     };
 
-    const progress = Math.min((dailyCount / goal) * 100, 100);
+    const goalMet = dailyCount >= goal;
+    const bar = '█'.repeat(dailyCount) + '░'.repeat(Math.max(goal - dailyCount, 0));
 
     return (
-        <div className={`leetcode-tracker ${isCollapsed ? 'collapsed' : ''}`}>
-            <div className="leetcode-header" onClick={() => setIsCollapsed(!isCollapsed)}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <h2 className="leetcode-title">LeetCode Tracker</h2>
-                    <div className="mini-stats">
-                        {dailyCount}/{goal}
-                    </div>
+        <div>
+            <div className="section-header" onClick={() => setIsOpen(!isOpen)}>
+                <div className="section-header-left">
+                    <span className="section-label"># leetcode</span>
+                    <span className={`leetcode-status ${goalMet ? 'goal-met' : 'in-progress'}`}>
+                        {dailyCount}/{goal} · {goalMet ? 'goal met' : 'keep going'}
+                    </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div className={`daily-status ${dailyCount >= goal ? 'goal-reached' : ''}`}>
-                        {dailyCount >= goal ? '🏆 Goal Met!' : 'Keep going!'}
-                    </div>
-                    <button className="toggle-btn">
-                        {isCollapsed ? '▼' : '▲'}
-                    </button>
-                </div>
+                <span className="section-toggle-icon">{isOpen ? '▲' : '▼'}</span>
             </div>
 
-            <div className="leetcode-content-wrapper">
-                <div className="leetcode-progress">
-                    <div className="progress-circle-container">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle
-                                cx="60"
-                                cy="60"
-                                r="54"
-                                fill="none"
-                                stroke="rgba(255,255,255,0.1)"
-                                strokeWidth="8"
-                            />
-                            <circle
-                                cx="60"
-                                cy="60"
-                                r="54"
-                                fill="none"
-                                stroke="#ffa116"
-                                strokeWidth="8"
-                                strokeDasharray="339.29"
-                                strokeDashoffset={339.29 - (339.29 * progress) / 100}
-                                strokeLinecap="round"
-                                style={{ transition: 'stroke-dashoffset 0.5s ease' }}
-                            />
-                        </svg>
-                        <div className="progress-text">
-                            {dailyCount}/{goal}
-                        </div>
-                    </div>
-                    <p>Problems solved today</p>
-                </div>
+            <div className={`section-content ${isOpen ? '' : 'collapsed'}`}>
+                <div className="leetcode-bar">{bar} {dailyCount}/{goal}</div>
 
                 <form className="leetcode-form" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         name="title"
-                        placeholder="Problem Title"
+                        placeholder="problem title"
                         value={formData.title}
                         onChange={handleChange}
                         required
@@ -115,7 +80,7 @@ const LeetCodeTracker = () => {
                     <input
                         type="url"
                         name="url"
-                        placeholder="Problem URL (optional)"
+                        placeholder="url (optional)"
                         value={formData.url}
                         onChange={handleChange}
                     />
@@ -124,23 +89,20 @@ const LeetCodeTracker = () => {
                         <option value="Medium">Medium</option>
                         <option value="Hard">Hard</option>
                     </select>
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Logging...' : 'Log Problem'}
+                    <button type="submit" className="form-submit-link" disabled={loading}>
+                        {loading ? '...' : '↵ log'}
                     </button>
                 </form>
 
                 <div className="problem-list">
-                    <h3>Recent Solved Problems</h3>
                     {problems.slice(0, 5).map((p) => (
                         <div key={p._id} className="problem-item">
-                            <div>
-                                <strong>{p.title}</strong>
-                                <div className={`difficulty-${p.difficulty}`}>{p.difficulty}</div>
+                            <div className="problem-item-info">
+                                <span className="problem-item-title">{p.title}</span>
+                                <span className={`problem-item-difficulty difficulty-${p.difficulty}`}>{p.difficulty}</span>
                             </div>
                             {p.url && (
-                                <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: '#ffa116' }}>
-                                    View
-                                </a>
+                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="problem-item-link">↗</a>
                             )}
                         </div>
                     ))}
@@ -149,6 +111,5 @@ const LeetCodeTracker = () => {
         </div>
     );
 };
-
 
 export default LeetCodeTracker;

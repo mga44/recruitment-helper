@@ -22,7 +22,7 @@ const AppointmentForm = ({ processId, onSubmit, onCancel }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content glass animate-fade">
+            <div className="modal-content animate-fade">
                 <h2>Add Google Calendar Event</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">

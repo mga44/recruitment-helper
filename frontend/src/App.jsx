@@ -138,97 +138,72 @@ ${feedbackList}`;
 
   return (
     <div className="container">
+      <div className="prompt-line">
+        <span className="prompt-dollar">$</span><span>recruitment-helper --dashboard</span><span className="prompt-cursor"></span>
+      </div>
+
       {isDemoMode && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.75rem 1.25rem', marginBottom: '1.5rem', border: '1px solid var(--primary)', borderRadius: '0.6rem', background: 'rgba(255, 255, 255, 0.05)' }}>
-          <span style={{ fontSize: '0.9rem' }}>
-            🧪 <strong>Demo mode</strong> — data lives in your browser only; Google Calendar is simulated.
-          </span>
-          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>
-            Reset demo data
-          </button>
+        <div className="demo-banner">
+          <span># demo_mode — data stored locally, calendar simulated</span>
+          <button className="btn-secondary" onClick={() => { resetDemoData(); window.location.reload(); }}>reset</button>
         </div>
       )}
-      <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="app-header">
         <div>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Recruitment <span style={{ color: 'var(--primary)' }}>Helper</span></h1>
-          <p style={{ color: 'var(--text-muted)' }}>Manage your job applications with ease.</p>
+          <h1>Recruitment Helper</h1>
+          <p className="app-tagline">Manage your job applications with ease.</p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="header-links">
           {!isGoogleConnected ? (
-            <button className="btn-secondary" onClick={() => window.location.href = '/api/auth/google'} style={{ borderColor: '#4285F4', color: '#4285F4' }}>
-              Connect Google Calendar
-            </button>
+            <a href="/api/auth/google" className="btn-secondary">connect_calendar</a>
           ) : (
-            <span style={{ fontSize: '0.9rem', padding: '0.5rem 1rem', color: '#34A853', border: '1px solid #34A853', borderRadius: '4px', backgroundColor: '#34A85310' }}>
-              ✓ Google Calendar Connected
-            </span>
+            <span className="calendar-connected">calendar: connected</span>
           )}
-          <button className="btn-secondary" onClick={() => setIsFeedbackOpen(true)}>Feedback Summary</button>
-          <button className="btn-primary" onClick={() => setIsFormOpen(true)}>+ Add Application</button>
+          <button className="btn-secondary" onClick={() => setIsFeedbackOpen(true)}>feedback_summary</button>
+          <button className="btn-primary" onClick={() => setIsFormOpen(true)}>[ + new_application ]</button>
         </div>
       </header>
 
       <Dashboard processes={processes} />
 
-      <LeetCodeTracker />
-      
-      <TaskTracker processes={processes} />
+      <div className="tracker-columns">
+        <LeetCodeTracker />
+        <TaskTracker processes={processes} />
+      </div>
 
       <section>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h2>Processes</h2>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <div className="filter-group">
-              <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginRight: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}>Status:</label>
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="filter-select">
-                {statuses.map(s => <option key={s}>{s}</option>)}
-              </select>
-            </div>
-            <div className="filter-group">
-              <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginRight: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}>Sort:</label>
-              <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="filter-select">
-                <option value="desc">Newest First</option>
-                <option value="asc">Oldest First</option>
-              </select>
-            </div>
-            <div className="view-toggle">
-              <button 
-                className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`} 
-                onClick={() => setViewMode('grid')}
-                title="Grid View"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              </button>
-              <button 
-                className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`} 
-                onClick={() => setViewMode('list')}
-                title="List View"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-              </button>
-            </div>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{filteredAndSortedProcesses.length} items found</span>
+        <div className="processes-toolbar">
+          <span className="section-label"># processes ({filteredAndSortedProcesses.length})</span>
+          <div className="processes-toolbar-controls">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+              <option value="desc">newest_first</option>
+              <option value="asc">oldest_first</option>
+            </select>
+            <span className="view-toggle">
+              <button className={`view-toggle-link ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')}>list</button>
+              <span className="view-toggle-sep">/</span>
+              <button className={`view-toggle-link ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>grid</button>
+            </span>
           </div>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Loading processes...</div>
+          <div className="process-empty">loading processes...</div>
         ) : (
           <div className={viewMode === 'grid' ? "process-grid" : "process-list"}>
             {viewMode === 'list' && filteredAndSortedProcesses.length > 0 && (
               <div className="process-list-header">
-                <div className="col-info">Company / Position</div>
-                <div className="col-status">Status</div>
-                <div className="col-salary">Salary Range</div>
-                <div className="col-date">Applied Date</div>
-                <div className="col-link">Job Link</div>
-                <div className="col-actions">Actions</div>
+                <div>#</div><div>COMPANY / ROLE</div><div>STATUS</div><div>SALARY</div><div>APPLIED</div><div>LINK</div><div style={{ textAlign: 'right' }}>ACTIONS</div>
               </div>
             )}
-            {filteredAndSortedProcesses.map(process => (
+            {filteredAndSortedProcesses.map((process, i) => (
               <ProcessCard
                 key={process._id}
                 process={process}
+                index={i}
                 viewMode={viewMode}
                 onEdit={setEditingProcess}
                 onDelete={handleDelete}
@@ -236,9 +211,7 @@ ${feedbackList}`;
               />
             ))}
             {filteredAndSortedProcesses.length === 0 && (
-              <div className="glass" style={{ padding: '4rem', textAlign: 'center', gridColumn: '1 / -1' }}>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>No processes found. Start by adding a new application!</p>
-              </div>
+              <div className="process-empty">No processes found. Start by adding a new application!</div>
             )}
           </div>
         )}
@@ -263,38 +236,21 @@ ${feedbackList}`;
 
       {isFeedbackOpen && (
         <div className="modal-overlay" onClick={() => setIsFeedbackOpen(false)}>
-          <div className="modal-content glass" style={{ maxWidth: '750px' }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ margin: 0 }}>Feedback Summary</h2>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          <div className="modal-content animate-fade" style={{ maxWidth: '750px' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Feedback Summary</h2>
+              <span className="modal-header-meta">
                 {processes.filter(p => p.rejectionFeedback && p.rejectionFeedback.trim()).length} entries
               </span>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+            <p className="modal-hint">
               Copy this prompt into an LLM to get a structured learning plan based on your rejection feedback.
             </p>
-            <textarea
-              readOnly
-              value={buildFeedbackText()}
-              style={{
-                width: '100%',
-                minHeight: '400px',
-                background: 'rgba(0,0,0,0.3)',
-                border: '1px solid var(--border)',
-                borderRadius: '0.6rem',
-                color: 'var(--text-main)',
-                padding: '1rem',
-                fontFamily: 'monospace',
-                fontSize: '0.85rem',
-                lineHeight: '1.6',
-                resize: 'vertical',
-                boxSizing: 'border-box',
-              }}
-            />
+            <textarea readOnly value={buildFeedbackText()} className="feedback-textarea" />
             <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => setIsFeedbackOpen(false)}>Close</button>
+              <button className="btn-secondary" onClick={() => setIsFeedbackOpen(false)}>close</button>
               <button className="btn-primary" onClick={handleCopyFeedback}>
-                {feedbackCopied ? 'Copied!' : 'Copy to Clipboard'}
+                {feedbackCopied ? 'copied!' : '↵ copy_to_clipboard'}
               </button>
             </div>
           </div>

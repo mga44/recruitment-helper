@@ -1,141 +1,92 @@
 import React from 'react';
 
-const ProcessCard = ({ process, onEdit, onDelete, onAddAppointment, viewMode }) => {
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'Applied': return '#6366f1';
-            case 'Screened':
-            case 'Technical':
-            case 'Managerial': return '#f59e0b';
-            case 'Offer': return '#22c55e';
-            case 'Rejected':
-            case 'Ghosted': return '#ef4444';
-            default: return '#94a3b8';
-        }
-    };
+const getStatusColor = (status) => {
+    switch (status) {
+        case 'Applied': return 'var(--neutral-status)';
+        case 'Screened':
+        case 'Technical':
+        case 'Managerial': return 'var(--warning)';
+        case 'Offer': return 'var(--accent)';
+        case 'Rejected':
+        case 'Ghosted': return 'var(--error)';
+        default: return 'var(--text-muted)';
+    }
+};
 
-    const isListView = viewMode === 'list';
+const formatSalary = (salary) => {
+    if (!salary || (!salary.min && !salary.max)) return '—';
+    const min = salary.min ? Math.round(salary.min / 1000) : 0;
+    const max = salary.max ? Math.round(salary.max / 1000) : 0;
+    return `${min}–${max}k ${salary.currency}`;
+};
+
+const ProcessCard = ({ process, index, onEdit, onDelete, onAddAppointment, viewMode }) => {
+    const statusColor = getStatusColor(process.status);
+
+    if (viewMode === 'list') {
+        return (
+            <div className="process-row">
+                <div className="process-row-idx">{String(index + 1).padStart(2, '0')}</div>
+                <div>
+                    <div className="process-row-company">{process.companyName}</div>
+                    <div className="process-row-position">{process.position}</div>
+                </div>
+                <div className="process-row-status" style={{ color: statusColor }}>{process.status}</div>
+                <div className="process-row-salary">{formatSalary(process.salary)}</div>
+                <div className="process-row-date">{new Date(process.appliedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                <div>
+                    {process.jobUrl ? (
+                        <a href={process.jobUrl} target="_blank" rel="noopener noreferrer" className="process-row-link">view ↗</a>
+                    ) : (
+                        <span className="process-row-link-empty">—</span>
+                    )}
+                </div>
+                <div className="process-row-actions">
+                    <button onClick={() => onEdit(process)} className="row-action-link">edit</button>
+                    <button onClick={() => onDelete(process._id)} className="row-action-link row-action-delete">del</button>
+                </div>
+            </div>
+        );
+    }
+
+    const hasFeedback = process.status === 'Rejected' && process.rejectionFeedback;
+    const hasAppointments = process.appointments && process.appointments.length > 0;
 
     return (
-        <div className={`process-card glass animate-fade ${isListView ? 'list-view' : ''}`}>
-            {isListView ? (
-                <>
-                    <div className="col-info">
-                        <h3 style={{ fontSize: '1.1rem', margin: 0 }}>{process.companyName}</h3>
-                        <p className="position-text" style={{ fontSize: '0.8rem', margin: 0 }}>{process.position}</p>
-                    </div>
-                    
-                    <div className="col-status">
-                        <span className="badge" style={{ 
-                            backgroundColor: `${getStatusColor(process.status)}20`, 
-                            color: getStatusColor(process.status), 
-                            border: `1px solid ${getStatusColor(process.status)}40`,
-                            fontSize: '0.65rem'
-                        }}>
-                            {process.status}
-                        </span>
-                    </div>
+        <div className="process-cell">
+            <div className="process-cell-header">
+                <div>
+                    <div className="process-cell-company">{process.companyName}</div>
+                    <div className="process-cell-position">{process.position}</div>
+                </div>
+                <span className="process-cell-status" style={{ color: statusColor }}>{process.status}</span>
+            </div>
 
-                    <div className="col-salary">
-                        {process.salary && (process.salary.min || process.salary.max) ? (
-                            <p className="salary-info" style={{ fontSize: '0.85rem', margin: 0 }}>
-                                💰 {process.salary.min?.toLocaleString()} - {process.salary.max?.toLocaleString()} {process.salary.currency}
-                            </p>
-                        ) : (
-                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>—</span>
-                        )}
-                    </div>
+            <div className="process-cell-meta">
+                <div>{formatSalary(process.salary)}</div>
+                <div className="process-cell-meta-date">{new Date(process.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                {process.jobUrl && (
+                    <a href={process.jobUrl} target="_blank" rel="noopener noreferrer" className="process-cell-link">view_posting ↗</a>
+                )}
+            </div>
 
-                    <div className="col-date">
-                        <p className="date-info" style={{ fontSize: '0.8rem', margin: 0 }}>📅 {new Date(process.appliedAt).toLocaleDateString()}</p>
-                    </div>
-
-                    <div className="col-link">
-                        {process.jobUrl ? (
-                            <a href={process.jobUrl} target="_blank" rel="noopener noreferrer" className="job-link" style={{ margin: 0 }}>
-                                View Job ↗
-                            </a>
-                        ) : (
-                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>—</span>
-                        )}
-                    </div>
-
-                    <div className="col-actions">
-                        <div className="list-actions">
-                            <button onClick={() => onEdit(process)} className="btn-icon">Edit</button>
-                            <button onClick={() => onDelete(process._id)} className="btn-icon btn-delete">Delete</button>
-                        </div>
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="card-header">
-                        <div>
-                            <h3 style={{ fontSize: '1.25rem' }}>{process.companyName}</h3>
-                            <p className="position-text" style={{ fontSize: '0.9rem' }}>{process.position}</p>
-                        </div>
-                        <span className="badge" style={{ 
-                            backgroundColor: `${getStatusColor(process.status)}20`, 
-                            color: getStatusColor(process.status), 
-                            border: `1px solid ${getStatusColor(process.status)}40`,
-                        }}>
-                            {process.status}
-                        </span>
-                    </div>
-
-                    <div className="card-body">
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            {process.salary && (process.salary.min || process.salary.max) && (
-                                <p className="salary-info">
-                                    💰 {process.salary.min?.toLocaleString()} - {process.salary.max?.toLocaleString()} {process.salary.currency}
-                                </p>
-                            )}
-                            <p className="date-info">📅 Applied At: {new Date(process.appliedAt).toLocaleDateString()}</p>
-                            {process.jobUrl && (
-                                <a href={process.jobUrl} target="_blank" rel="noopener noreferrer" className="job-link">
-                                    View Job Post ↗
-                                </a>
-                            )}
-                        </div>
-                        
-                        {process.status === 'Rejected' && process.rejectionFeedback && (
-                            <div style={{ marginTop: '0.75rem', padding: '0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
-                                <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.85rem', color: '#ef4444' }}>Rejection Feedback</h4>
-                                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
-                                    {process.rejectionFeedback}
-                                </p>
-                            </div>
-                        )}
-
-                        <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>Appointments ({process.appointments?.length || 0})</h4>
-                                <button onClick={() => onAddAppointment(process._id)} className="btn-icon" style={{ fontSize: '0.8rem', padding: '0.2rem 0.5rem' }}>
-                                    + Add
-                                </button>
-                            </div>
-                            {process.appointments && process.appointments.length > 0 && (
-                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.85rem' }}>
-                                    {process.appointments.map(app => (
-                                        <li key={app._id || app.eventId} style={{ padding: '0.5rem', backgroundColor: 'var(--bg-card)', borderRadius: '4px', marginBottom: '0.5rem' }}>
-                                            <strong>{app.title}</strong>
-                                            <div style={{ color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                                                {new Date(app.startTime).toLocaleString()}
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="card-footer">
-                        <button onClick={() => onEdit(process)} className="btn-icon">Edit</button>
-                        <button onClick={() => onDelete(process._id)} className="btn-icon btn-delete">Delete</button>
-                        <button onClick={() => onAddAppointment(process._id)} className="btn-icon" style={{ marginLeft: 'auto' }}>Appointment</button>
-                    </div>
-                </>
+            {hasFeedback && (
+                <div className="process-cell-feedback">{process.rejectionFeedback}</div>
             )}
+
+            {hasAppointments && (
+                <div className="process-cell-appointments">
+                    {process.appointments.map(app => (
+                        <div key={app._id || app.eventId}>{app.title} — {new Date(app.startTime).toLocaleString('en-US')}</div>
+                    ))}
+                </div>
+            )}
+
+            <div className="process-cell-footer">
+                <button onClick={() => onEdit(process)} className="row-action-link">edit</button>
+                <button onClick={() => onDelete(process._id)} className="row-action-link row-action-delete">del</button>
+                <button onClick={() => onAddAppointment(process._id)} className="row-action-link process-cell-add-appt">+ appt</button>
+            </div>
         </div>
     );
 };

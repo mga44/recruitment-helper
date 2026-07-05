@@ -4,7 +4,7 @@ import './TaskTracker.css';
 
 const TaskTracker = ({ processes }) => {
     const [tasks, setTasks] = useState([]);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [formData, setFormData] = useState({
         title: '',
         dueDate: '',
@@ -67,7 +67,6 @@ const TaskTracker = ({ processes }) => {
         }
     };
 
-    // Sorting: undone first, then ordered by due date ascending
     const sortedTasks = [...tasks].sort((a, b) => {
         if (a.isDone !== b.isDone) {
             return a.isDone ? 1 : -1;
@@ -80,38 +79,34 @@ const TaskTracker = ({ processes }) => {
         today.setHours(0, 0, 0, 0);
         const due = new Date(dateString);
         due.setHours(0, 0, 0, 0);
-        const diffTime = due - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
+        return Math.ceil((due - today) / (1000 * 60 * 60 * 24));
     };
 
     const formatDaysLeft = (days) => {
-        if (days < 0) return `Overdue by ${Math.abs(days)} day(s)`;
-        if (days === 0) return 'Due today';
-        if (days === 1) return 'Due tomorrow';
-        return `Due in ${days} days`;
+        if (days < 0) return `overdue ${Math.abs(days)}d`;
+        if (days === 0) return 'due today';
+        if (days === 1) return 'due tomorrow';
+        return `due in ${days}d`;
     };
 
+    const pendingCount = tasks.filter(t => !t.isDone).length;
+
     return (
-        <div className={`task-tracker ${isCollapsed ? 'collapsed' : ''}`}>
-            <div className="task-header" onClick={() => setIsCollapsed(!isCollapsed)}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <h2 className="task-title">TODO Tracker</h2>
-                    <div className="mini-stats" style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '0.2rem 0.8rem', borderRadius: '12px', fontSize: '0.9rem' }}>
-                        {tasks.filter(t => !t.isDone).length} pending
-                    </div>
+        <div>
+            <div className="section-header" onClick={() => setIsOpen(!isOpen)}>
+                <div className="section-header-left">
+                    <span className="section-label"># tasks</span>
+                    <span className="tasks-pending">{pendingCount} pending</span>
                 </div>
-                <button className="toggle-btn" style={{ background: 'none', border: 'none', color: 'var(--text-light)', cursor: 'pointer' }}>
-                    {isCollapsed ? '▼' : '▲'}
-                </button>
+                <span className="section-toggle-icon">{isOpen ? '▲' : '▼'}</span>
             </div>
 
-            <div className="task-content-wrapper">
+            <div className={`section-content ${isOpen ? '' : 'collapsed'}`}>
                 <form className="task-form" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         name="title"
-                        placeholder="Task description..."
+                        placeholder="task description"
                         value={formData.title}
                         onChange={handleChange}
                         required
@@ -121,7 +116,7 @@ const TaskTracker = ({ processes }) => {
                         value={formData.relatedProcess}
                         onChange={handleChange}
                     >
-                        <option value="">-- General Task --</option>
+                        <option value="">-- general --</option>
                         {processes.map(p => (
                             <option key={p._id} value={p._id}>
                                 {p.companyName} - {p.position}
@@ -135,50 +130,30 @@ const TaskTracker = ({ processes }) => {
                         onChange={handleChange}
                         required
                     />
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Adding...' : 'Add Task'}
+                    <button type="submit" className="form-submit-link" disabled={loading}>
+                        {loading ? '...' : '↵ add'}
                     </button>
                 </form>
 
                 <div className="task-list">
                     {sortedTasks.length === 0 ? (
-                        <p style={{ color: 'var(--text-muted)', textAlign: 'center', margin: '1rem 0' }}>No tasks found. Add a new task to get started!</p>
+                        <p className="task-empty">No tasks found. Add a new task to get started!</p>
                     ) : (
                         sortedTasks.map((t) => {
                             const daysLeft = getDaysLeft(t.dueDate);
-                            const isUrgent = !t.isDone && daysLeft <= 2;
                             const isOverdue = !t.isDone && daysLeft < 0;
 
                             return (
-                                <div key={t._id} className={`task-item ${t.isDone ? 'done' : ''} ${isUrgent ? 'urgent' : ''}`}>
-                                    <input
-                                        type="checkbox"
-                                        className="task-checkbox"
-                                        checked={t.isDone}
-                                        onChange={() => handleToggleDone(t)}
-                                    />
-                                    <div className="task-info">
-                                        <strong>{t.title}</strong>
-                                        <div className="task-meta">
-                                            {t.relatedProcess && t.relatedProcess.companyName ? (
-                                                <span style={{ marginRight: '1rem', color: '#61dafb' }}>
-                                                    🏢 {t.relatedProcess.companyName}
-                                                </span>
-                                            ) : t.relatedProcess ? (
-                                                <span style={{ marginRight: '1rem', color: '#61dafb' }}>
-                                                    🏢 Process Task
-                                                </span>
-                                            ) : null}
-                                        </div>
-                                    </div>
-                                    <div className={`task-due-date ${isOverdue ? 'overdue' : ''}`}>
-                                        📅 {formatDaysLeft(daysLeft)}
-                                    </div>
-                                    <div className="task-actions">
-                                        <button onClick={() => handleDelete(t._id)} title="Delete Task">
-                                            🗑️
-                                        </button>
-                                    </div>
+                                <div key={t._id} className={`task-row ${t.isDone ? 'done' : ''}`}>
+                                    <button className={`task-marker ${t.isDone ? 'done' : 'pending'}`} onClick={() => handleToggleDone(t)}>
+                                        {t.isDone ? '[x]' : '[ ]'}
+                                    </button>
+                                    <span className={`task-row-title ${t.isDone ? 'done' : ''}`}>{t.title}</span>
+                                    {t.relatedProcess && (
+                                        <span className="task-row-related">{t.relatedProcess.companyName || 'process task'}</span>
+                                    )}
+                                    <span className={`task-row-due ${isOverdue ? 'overdue' : 'due'}`}>{formatDaysLeft(daysLeft)}</span>
+                                    <button className="task-row-delete" onClick={() => handleDelete(t._id)} title="Delete task">del</button>
                                 </div>
                             );
                         })

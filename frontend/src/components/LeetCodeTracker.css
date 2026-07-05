@@ -1,175 +1,107 @@
-.leetcode-tracker {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    color: #fff;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease;
+.leetcode-status.goal-met {
+    color: var(--accent);
 }
 
-.leetcode-tracker:hover {
-    transform: translateY(-5px);
-}
-
-.leetcode-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0;
-    cursor: pointer;
-    user-select: none;
-}
-
-.leetcode-tracker:not(.collapsed) .leetcode-header {
-    margin-bottom: 1.5rem;
-}
-
-.mini-stats {
-    background: rgba(255, 161, 22, 0.2);
-    color: #ffa116;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.toggle-btn {
-    background: none;
-    border: none;
+.leetcode-status.in-progress {
     color: var(--text-muted);
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: transform 0.3s;
 }
 
-.leetcode-content-wrapper {
-    max-height: 1000px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
-}
-
-.collapsed .leetcode-content-wrapper {
-    max-height: 0;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.leetcode-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, #ffa116, #ff6a00);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.leetcode-progress {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.progress-circle-container {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1rem;
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    font-weight: bold;
+.leetcode-bar {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 20px;
 }
 
 .leetcode-form {
-    display: grid;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1rem;
-    border-radius: 12px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
 }
 
-.leetcode-form input,
+.leetcode-form input[name="title"] {
+    flex: 2;
+    min-width: 0;
+}
+
 .leetcode-form select {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 0.75rem;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s;
+    flex: 1;
 }
 
-.leetcode-form input:focus {
-    border-color: #ffa116;
-}
-
-.leetcode-form button {
-    background: linear-gradient(90deg, #ffa116, #ff6a00);
-    color: white;
+.form-submit-link {
+    align-self: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: none;
     border: none;
-    padding: 0.75rem;
-    border-radius: 8px;
+    white-space: nowrap;
+    padding: 0;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.3s;
 }
 
-.leetcode-form button:hover {
-    opacity: 0.9;
+.form-submit-link:hover {
+    text-decoration: underline;
+}
+
+.form-submit-link:disabled {
+    color: var(--text-muted);
+    cursor: default;
 }
 
 .problem-list {
-    margin-top: 1.5rem;
-    max-height: 200px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .problem-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.02);
-    margin-bottom: 0.5rem;
-    border-radius: 8px;
-    border-left: 4px solid #ffa116;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid #16181B;
+}
+
+.problem-item-info {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.problem-item-title {
+    font-size: 14.5px;
+    color: var(--text-body);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.problem-item-difficulty {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.problem-item-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 .difficulty-Easy {
-    color: #00af9b;
+    color: var(--accent);
 }
 
 .difficulty-Medium {
-    color: #ffb800;
+    color: var(--warning);
 }
 
 .difficulty-Hard {
-    color: #ff2d55;
-}
-
-.goal-reached {
-    color: #00af9b;
-    font-weight: bold;
-    animation: celebrate 0.5s ease-out;
-}
-
-@keyframes celebrate {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    color: var(--error);
 }

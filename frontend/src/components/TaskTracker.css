@@ -1,162 +1,131 @@
-.task-tracker {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-
-.task-tracker.collapsed .task-content-wrapper {
-    display: none;
-}
-
-.task-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
-
-.task-title {
-    font-size: 1.5rem;
-    color: var(--text-light);
-    margin: 0;
-}
-
-.task-content-wrapper {
-    margin-top: 1.5rem;
-    animation: fadeIn 0.3s ease;
+.tasks-pending {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--warning);
 }
 
 .task-form {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
 }
 
-.task-form input,
-.task-form select {
-    flex: 1;
-    min-width: 150px;
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text-light);
+.task-form input[name="title"] {
+    flex: 2;
+    min-width: 0;
 }
 
+.task-form select,
 .task-form input[type="date"] {
-    color-scheme: dark;
+    flex: 1;
 }
 
-.task-form button {
-    padding: 0.5rem 1.5rem;
-    background: var(--primary);
-    color: white;
+.form-submit-link {
+    align-self: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: none;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    white-space: nowrap;
+    padding: 0;
     font-weight: 600;
-    transition: background 0.2s;
+    cursor: pointer;
 }
 
-.task-form button:hover {
-    background: var(--primary-dark);
+.form-submit-link:hover {
+    text-decoration: underline;
+}
+
+.form-submit-link:disabled {
+    color: var(--text-muted);
+    cursor: default;
 }
 
 .task-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
-.task-item {
+.task-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    border-left: 4px solid var(--primary);
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid #16181B;
 }
 
-.task-item.urgent {
-    border-left-color: #ff4d4f;
-    background: rgba(255, 77, 79, 0.1);
+.task-row.done {
+    opacity: 0.5;
 }
 
-.task-item.done {
-    opacity: 0.6;
-    border-left-color: #52c41a;
+.task-marker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.task-marker.pending {
+    color: var(--text-muted);
+}
+
+.task-marker.done {
+    color: var(--accent);
+}
+
+.task-row-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 14.5px;
+    color: var(--text-body);
+}
+
+.task-row-title.done {
     text-decoration: line-through;
 }
 
-.task-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    flex: 1;
-    margin-left: 1rem;
+.task-row-related {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-faint);
+    flex-shrink: 0;
 }
 
-.task-info strong {
-    font-size: 1.1rem;
+.task-row-due {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    flex-shrink: 0;
 }
 
-.task-meta {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+.task-row-due.due {
+    color: var(--warning);
 }
 
-.task-due-date {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: #ffa116;
+.task-row-due.overdue {
+    color: var(--error);
 }
 
-.task-due-date.overdue {
-    color: #ff4d4f;
-}
-
-.task-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.task-actions button {
+.task-row-delete {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-faint);
     background: none;
     border: none;
+    padding: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.task-row-delete:hover {
+    color: var(--error);
+}
+
+.task-empty {
     color: var(--text-muted);
-    cursor: pointer;
-    padding: 0.3rem 0.5rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-}
-
-.task-actions button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-light);
-}
-
-.task-checkbox {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    font-size: 13.5px;
+    padding: 10px 0;
 }

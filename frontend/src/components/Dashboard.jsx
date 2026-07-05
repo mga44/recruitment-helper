@@ -9,23 +9,14 @@ const Dashboard = ({ processes }) => {
     };
 
     return (
-        <div className="dashboard-grid">
-            <div className="stat-card glass animate-fade" style={{ animationDelay: '0s' }}>
-                <span className="stat-label">Total Applications</span>
-                <span className="stat-value">{stats.total}</span>
-            </div>
-            <div className="stat-card glass animate-fade" style={{ animationDelay: '0.1s' }}>
-                <span className="stat-label">Active Processes</span>
-                <span className="stat-value">{stats.active}</span>
-            </div>
-            <div className="stat-card glass animate-fade" style={{ animationDelay: '0.2s' }}>
-                <span className="stat-label">Interviewing</span>
-                <span className="stat-value">{stats.interviewing}</span>
-            </div>
-            <div className="stat-card glass animate-fade" style={{ animationDelay: '0.3s' }}>
-                <span className="stat-label">Offers</span>
-                <span className="stat-value">{stats.offers}</span>
-            </div>
+        <div className="stats-line">
+            <span className="stats-value">{stats.total}</span> <span className="stats-word">total</span>
+            <span className="stats-sep">/</span>
+            <span className="stats-value">{stats.active}</span> <span className="stats-word">active</span>
+            <span className="stats-sep">/</span>
+            <span className="stats-value stats-warning">{stats.interviewing}</span> <span className="stats-word">interviewing</span>
+            <span className="stats-sep">/</span>
+            <span className="stats-value stats-accent">{stats.offers}</span> <span className="stats-word">offers</span>
         </div>
     );
 };

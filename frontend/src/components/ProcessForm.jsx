@@ -37,7 +37,7 @@ const ProcessForm = ({ process, onSubmit, onCancel }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content glass animate-fade">
+            <div className="modal-content animate-fade">
                 <h2>{process ? 'Edit Process' : 'New Application'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
